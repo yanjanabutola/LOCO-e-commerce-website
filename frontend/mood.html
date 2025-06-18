@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOCO Mood Shopping</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #ffe6f0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    /* Popup */
+    .mood-box {
+      position: relative;
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      padding: 50px 60px;
+      max-width: 520px;
+      width: 90%;
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .close-btn:hover {
+      color: #e91e63;
+    }
+
+    h1 {
+      color: #e91e63;
+      font-size: 28px;
+      margin-bottom: 25px;
+    }
+
+    .emojis {
+      font-size: 36px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .emojis span {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .emojis span:hover {
+      transform: scale(1.4);
+    }
+
+    .products {
+      display: none;
+      text-align: left;
+      margin-top: 30px;
+      font-size: 17px;
+    }
+
+    .products h3 {
+      color: #333;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-emoji {
+      font-size: 20px;
+    }
+
+    /* Main Content */
+    .main-ui {
+      display: none;
+      width: 100%;
+      max-width: 1000px;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .menu-icon {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .categories {
+      display: none;
+      margin-top: 20px;
+      padding-left: 30px;
+      color: #e91e63;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mood Popup -->
+  <div class="mood-box" id="popup">
+    <div class="close-btn" onclick="closePopup()">✖</div>
+    <h1>Select Your Mood 😄</h1>
+    <div class="emojis">
+      <span onclick="showProducts('happy')">😊</span>
+      <span onclick="showProducts('sad')">😔</span>
+      <span onclick="showProducts('excited')">🤩</span>
+      <span onclick="showProducts('lazy')">🥱</span>
+      <span onclick="showProducts('romantic')">🥰</span>
+    </div>
+
+    <div class="products" id="productList">
+      <h3>Recommended for You:</h3>
+      <ul id="items"></ul>
+    </div>
+  </div>
+
+  <!-- Main UI -->
+  <div class="main-ui" id="mainUI">
+    <div class="topbar">
+      <div class="menu-icon" onclick="toggleCategories()">☰</div>
+      <div class="search-bar" style="flex: 1">
+        <input type="text" placeholder="Search for products...">
+      </div>
+    </div>
+    <div class="categories" id="categoryList">
+      <p>Electronics</p>
+      <p>Clothing</p>
+      <p>Footwear</p>
+      <p>Accessories</p>
+      <p>Home Appliances</p>
+    </div>
+  </div>
+
+  <script>
+    const productSuggestions = {
+      happy: [
+        { name: 'Colorful T-shirt', emoji: '👕' },
+        { name: 'Fun Phone Case', emoji: '📱' },
+        { name: 'Happy Socks', emoji: '🧦' },
+        { name: 'Scented Candles', emoji: '🕯️' },
+        { name: 'Cartoon Mug', emoji: '☕' }
+      ],
+      sad: [
+        { name: 'Motivational Book', emoji: '📖' },
+        { name: 'Soft Blanket', emoji: '🛌' },
+        { name: 'Comfort Snacks', emoji: '🍫' },
+        { name: 'Warm Hoodie', emoji: '🧥' },
+        { name: 'Self-care Kit', emoji: '🧴' }
+      ],
+      excited: [
+        { name: 'Concert Tickets', emoji: '🎫' },
+        { name: 'Adventure Backpack', emoji: '🎒' },
+        { name: 'Cool Gadgets', emoji: '🧠' },
+        { name: 'Sneakers', emoji: '👟' },
+        { name: 'Party Lights', emoji: '🎉' }
+      ],
+      lazy: [
+        { name: 'Comfy Pajamas', emoji: '🛌' },
+        { name: 'Netflix Gift Card', emoji: '🎁' },
+        { name: 'Soft Slippers', emoji: '🥿' },
+        { name: 'Snack Pack', emoji: '🍿' },
+        { name: 'Neck Pillow', emoji: '🛏️' }
+      ],
+      romantic: [
+        { name: 'Love Notes Jar', emoji: '💌' },
+        { name: 'Couple Rings', emoji: '💍' },
+        { name: 'Scented Perfume', emoji: '🌸' },
+        { name: 'Photo Frame', emoji: '🖼️' },
+        { name: 'Teddy Bear', emoji: '🧸' }
+      ]
+    };
+
+    function showProducts(mood) {
+      const list = document.getElementById('items');
+      const section = document.getElementById('productList');
+      list.innerHTML = '';
+      productSuggestions[mood].forEach(product => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="product-emoji">${product.emoji}</span> ${product.name}`;
+        list.appendChild(li);
+      });
+      section.style.display = 'block';
+    }
+
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
+      document.getElementById('mainUI').style.display = 'block';
+    }
+
+    function toggleCategories() {
+      const cat = document.getElementById('categoryList');
+      cat.style.display = cat.style.display === 'block' ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>
