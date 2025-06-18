@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LOCO - E-commerce</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <header>
+    <h1>🛒 LOCO Shop</h1>
+  </header>
+
+  <main>
+    <section class="product">
+      <img src="https://via.placeholder.com/150" alt="Product Image"/>
+      <h2>Smartwatch</h2>
+      <p>Price: ₹<span id="price">1200</span></p>
+      <select id="coupon">
+        <option value="">-- Select Offer --</option>
+        <option value="NEWYEAR2025">NEWYEAR2025</option>
+        <option value="SEASONEND25">SEASONEND25</option>
+        <option value="FESTBONUS50">FESTBONUS50</option>
+      </select>
+      <button onclick="applyOffer()">Apply Offer</button>
+      <p id="final-price"></p>
+      <div class="actions">
+        <button onclick="addToCart()">Add to Cart</button>
+        <button onclick="addToWishlist()">Add to Wishlist</button>
+        <button onclick="buyNow()">Buy Now</button>
+      </div>
+    </section>
+
+    <section class="cart">
+      <h3>🛍️ Cart</h3>
+      <ul id="cart-list"></ul>
+      <button onclick="placeOrder()">Place Order</button>
+    </section>
+
+    <section class="wishlist">
+      <h3>💖 Wishlist</h3>
+      <ul id="wishlist-list"></ul>
+    </section>
+
+    <section class="address">
+      <h3>🏠 Address</h3>
+      <textarea id="address" placeholder="Enter delivery address..."></textarea>
+    </section>
+
+    <section class="payment">
+      <h3>💳 Payment</h3>
+      <select id="payment-method">
+        <option value="">-- Select Payment --</option>
+        <option value="cod">Cash on Delivery</option>
+        <option value="card">Credit/Debit Card</option>
+        <option value="upi">UPI</option>
+      </select>
+    </section>
+
+    <section class="thank-you">
+      <h3>🎁 Thank you! Shop again!</h3>
+    </section>
+  </main>
+
+  <script>
+    let cart = [];
+    let wishlist = [];
+
+    const offers = {
+      NEWYEAR2025: { type: 'rate', value: 15, start: '2025-01-01', end: '2025-01-31' },
+      SEASONEND25: { type: 'rate', value: 25, start: '2025-06-20', end: '2025-07-10' },
+      FESTBONUS50: { type: 'fixed', value: 50, minAmount: 500, start: '2025-08-01', end: '2025-08-15' },
+    };
+
+    function addToCart() {
+      cart.push('Smartwatch');
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById('cart-list');
+      cartList.innerHTML = '';
+      cart.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        li.innerHTML += ` <button onclick="removeFromCart(${index})">Remove</button>`;
+        cartList.appendChild(li);
+      });
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function addToWishlist() {
+      wishlist.push('Smartwatch');
+      renderWishlist();
+    }
+
+    function renderWishlist() {
+      const wishlistList = document.getElementById('wishlist-list');
+      wishlistList.innerHTML = '';
+      wishlist.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        li.innerHTML += ` <button onclick="deleteFromWishlist(${index})">Delete</button>`;
+        wishlistList.appendChild(li);
+      });
+    }
+
+    function deleteFromWishlist(index) {
+      wishlist.splice(index, 1);
+      renderWishlist();
+    }
+
+    function applyOffer() {
+      const price = 1200;
+      const code = document.getElementById('coupon').value;
+      const offer = offers[code];
+      let final = price;
+
+      if (!offer) {
+        alert("Select a valid offer");
+        return;
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+      if (today < offer.start || today > offer.end) {
+        alert("Offer not valid today");
+        return;
+      }
+
+      if (offer.type === 'rate') {
+        final = price - (price * offer.value / 100);
+      } else if (offer.type === 'fixed' && price >= offer.minAmount) {
+        final = price - offer.value;
+      }
+
+      document.getElementById('final-price').innerText = `Discounted Price: ₹${final.toFixed(2)}`;
+    }
+
+    function buyNow() {
+      addToCart();
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function placeOrder() {
+      const address = document.getElementById('address').value;
+      const payment = document.getElementById('payment-method').value;
+
+      if (cart.length === 0 || !address || !payment) {
+        alert('Please complete all steps before placing order!');
+        return;
+      }
+
+      alert("✅ Order Placed!\nThank you for shopping with us!");
+      cart = [];
+      renderCart();
+    }
+  </script>
+
+</body>
+</html>

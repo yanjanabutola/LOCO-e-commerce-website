@@ -1,0 +1,59 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f0e6;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #2e2e2e;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+main {
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+section {
+  background: #fffaf0;
+  border: 1px solid #d3bfa5;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px #aaa;
+}
+
+.product img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.actions button {
+  margin: 5px;
+  padding: 10px;
+  background: #f7c948;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.actions button:hover {
+  background: #e6b800;
+}
+
+textarea, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.thank-you {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #444;
+  font-weight: bold;
+}
