@@ -1,0 +1,12 @@
+<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee"
+         version="5.0">
+  <servlet>
+    <servlet-name>ProductDisplay</servlet-name>
+    <servlet-class>servlet.ProductDisplayServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ProductDisplay</servlet-name>
+    <url-pattern>/products</url-pattern>
+  </servlet-mapping>
+</web-app>
